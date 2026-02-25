@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:38:45 by thcardos          #+#    #+#             */
-/*   Updated: 2026/02/23 13:27:23 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/02/25 19:02:41 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,22 @@
 
 char	*get_next_line(int fd)
 {
-	char	buffer[BUFFER_SIZE];
-	char	*line;
-	int		bytes_read;
+	char		buffer[BUFFER_SIZE];
+	char		*line;
+	int			bytes_read;
+	static char	*stash;
 
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	if (bytes_read == -1)
+	stash = malloc(bytes_read);
+	if (bytes_read == -1 || bytes_read == 0)
 		return (NULL);
-	if (bytes_read == 0)
+	line = malloc((bytes_read + 1) * sizeof(char));
+	if (!line)
 		return (NULL);
-    line = malloc((bytes_read + 1) * sizeof(char));
-    if (!line)
-        return (NULL);
 	if (bytes_read > 0)
-    {
-    // Tu código de copia aquí
-    // (bucle o función helper)
-    }
-
+	{
+		ft_memcpy(line, buffer, bytes_read);
+		line[bytes_read] = '\0';
+	}
 	return (line);
 }

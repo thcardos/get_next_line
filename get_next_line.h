@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:39:16 by thcardos          #+#    #+#             */
-/*   Updated: 2026/02/23 12:49:27 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/02/25 17:22:34 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@
 # include <unistd.h>
 
 char	*get_next_line(int fd);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
 
 #endif
