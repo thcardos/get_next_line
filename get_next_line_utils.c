@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:39:37 by thcardos          #+#    #+#             */
-/*   Updated: 2026/02/25 18:05:32 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/02 19:53:42 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,31 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 		i++;
 	}
 	return (dest);
+}
+char	*ft_strchr(const char *s, int c)
+{
+	unsigned int	i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == (char)c)
+		{
+			return ((char *)&s[i]);
+		}
+		i++;
+	}
+	if (s[i] == (char)c)
+	{
+		return ((char *)&s[i]);
+	}
+	return (NULL);
+}
+size_t ft_strlen(const char *s)
+{
+    size_t i;
+    i = 0;
+    while (s[i] != '\0')
+        i++;
+    return (i);
 }

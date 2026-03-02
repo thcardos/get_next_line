@@ -6,108 +6,118 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:38:45 by thcardos          #+#    #+#             */
-/*   Updated: 2026/02/27 20:00:10 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/02 20:41:25 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strchr(const char *s, int c)
+static char	*extract_line(char *stash, char *newline_pos)
 {
-	unsigned int	i;
+	size_t	line_len;
+	char	*line;
 
-	i = 0;
-	while (s[i] != '\0')
+	line_len = (newline_pos - stash) + 1;
+	line = malloc((line_len + 1) * sizeof(char));
+	if (!line)
+		return (NULL);
+	ft_memcpy(line, stash, line_len);
+	line[line_len] = '\0';
+	return (line);
+}
+static char	*update_stash(char *stash, char *newline_pos)
+{
+	size_t	rest_len;
+	char	*new_stash;
+
+	if (*(newline_pos + 1) == '\0')
+		return (free(stash), NULL);
+	rest_len = ft_strlen(newline_pos + 1);
+	new_stash = malloc((rest_len + 1) * sizeof(char));
+	if (!new_stash)
+		return (free(stash), NULL);
+	ft_memcpy(new_stash, newline_pos + 1, rest_len);
+	new_stash[rest_len] = '\0';
+	return (free(stash), new_stash);
+}
+static char	*concat_to_stash(char *stash, char *buffer, int bytes_read)
+{
+	char	*new_stash;
+	size_t	stash_len;
+	size_t	total_len;
+
+	buffer[bytes_read] = '\0';
+	if (stash != NULL)
 	{
-		if (s[i] == (char)c)
-		{
-			return ((char *)&s[i]);
-		}
-		i++;
+		stash_len = ft_strlen(stash);
+		total_len = stash_len + bytes_read;
+		new_stash = malloc((total_len + 1) * sizeof(char));
+		if (!new_stash)
+			return (free(stash), NULL);
+		ft_memcpy(new_stash, stash, stash_len);
+		ft_memcpy(new_stash + stash_len, buffer, bytes_read);
+		new_stash[total_len] = '\0';
+		return (free(stash), new_stash);
 	}
-	if (s[i] == (char)c)
+	else
 	{
-		return ((char *)&s[i]);
+		if (!(stash = malloc(bytes_read + 1)))
+			return (NULL);
+		ft_memcpy(stash, buffer, bytes_read);
+		stash[bytes_read] = '\0';
+		return (stash);
 	}
-	return (NULL);
 }
 char	*get_next_line(int fd)
 {
-	static char *stash = NULL; // Inicializar a NULL (solo la primera vez)
-	char	*line = NULL; //Lo que devolveremos
-	int *newline_pos; // Para guardar el retorno de ft_strchr
-	size_t line_len;  // Para calcular longitud de la línea
-	size_t	rest_len; // Longitud del resto en stash
-	char *new_bstash = NULL; //Para el nuevo stash temporal
+	static char	*stash = NULL;
+	char		*line;
+	char		*newline_pos;
+    char buffer[BUFFER_SIZE];
+    int bytes_read;
 
 	if (stash != NULL)
 	{
-		newline_pos = ft_strchr(stash, '\n'); // Busca '\n' en stash y gusrda el retorno en newline
-		
-		if (newline_pos != NULL) // Si se ha encontrado \n
+		if ((newline_pos = ft_strchr(stash, '\n')) != NULL)
 		{
-			line_len = (newline_pos - stash) + 1; // calcula longirtud de la linea (+1 para incluir el \n)
-			line = malloc((line_len + 1) * sizeof(char)); // Reserva memoria para line
-			if (!line)
-				return (NULL);
-			if (line_len == -1 || bytes_read == 0)
-				return (NULL);
-			if (line_len > 0)
+			if (!(line = extract_line(stash, newline_pos)))
 			{
-				ft_memcpy(line, stash, line_len); //Copia line_len bytes desde stash a line
-				line[line_len] = '\0'; //Añade el terminador
+				free(stash);
+				stash = NULL;
+				return (NULL);
 			}
+			stash = update_stash(stash, newline_pos);
 			return (line);
-			if((newline_pos + 1) != NULL) //Si hay algo despues del \n
-				strlen(stash) - line_len; // 1. Calcula longitud del resto
-				 // 2. malloc nuevo buffer para el resto
-				// 3. Copia los caracteres del resto al nuevo buffer
-				free(stash); // 4. Libera el antiguo
-				// 5. stash = nuevo_buffer
+		}
 	}
-	line_len = read(fd, buffer, BUFFER_SIZE);
-	stash = malloc(line_len);
-		}	
-		
-	// procesar stash:
-	// si encuentro \n en el stash, devolver linea hasta ahí
-	// guardo lo demás en el stash(actualizo)
-	// si no encuentro \n leo más con read
-	// concateno con el stash
-}
-// llamar a read()
-
-/*if (line_len == -1 || bytes_read == 0)
-		return (NULL);
-	line = malloc((line_len + 1) * sizeof(char));
-	if (line_len > 0)
+	while (1)
 	{
-		ft_memcpy(line, buffer, line_len);
-		line[line_len] = '\0';
-	}
-	return (line);*/
-
-/*
-┌─────────────────────────────────────────────────────┐
-│  if (stash != NULL)                                 │
-│  {                                                  │
-│      newline_pos = ft_strchr(stash, '\n');          │
-│                                                     │
-│      if (newline_pos != NULL)  ← ENCONTRÉ \n        │
-│      {                                              │
-│          1. Calcular line_len                       │
-│          2. malloc para line                        │
-│          3. Verificar malloc                        │
-│          4. COPIAR datos de stash a line            │
-│          5. Añadir '\0' a line                      │
-│          6. ACTUALIZAR stash con el resto           │ ← ¡FALTA!
-│          7. return (line);                          │ ← ¡FALTA!
-│      }                                              │
-│      // Si NO hay \n: NO hacer nada, continuar      │
-│  }                                                  │
-│                                                     │
-│  // Solo llegas aquí si NO encontraste \n en stash  │
-│  bytes_read = read(fd, buffer, BUFFER_SIZE);        │
-│  // ... continuar con lógica de read()              │
-└─────────────────────────────────────────────────────┘
-*/
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == -1)
+		{
+			free(stash);
+			stash = NULL;
+			return (NULL);
+		}
+		if (bytes_read == 0)
+		{
+			if (stash != NULL)
+			{
+				return (stash);
+			}
+			free(stash);
+			stash = NULL;
+			return (NULL);
+		}
+		stash = concat_to_stash(stash, buffer, bytes_read);
+        if (!stash)
+            return (NULL);
+        if ((newline_pos = ft_strchr(stash, '\n')) != NULL)
+        {
+            line = extract_line(stash, newline_pos);
+            stash = update_stash(stash, newline_pos);
+            return (line);
+        }
+        /* Si no hay \n, continuar bucle */
+    }
+}

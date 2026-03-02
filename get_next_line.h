@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:39:16 by thcardos          #+#    #+#             */
-/*   Updated: 2026/02/27 18:43:08 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/02 19:53:57 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,6 @@
 char	*get_next_line(int fd);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 char	*ft_strchr(const char *s, int c);
+size_t	ft_strlen(const char *s);
 
 #endif
