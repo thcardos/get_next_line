@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 12:50:03 by thcardos          #+#    #+#             */
-/*   Updated: 2026/02/25 18:20:37 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/03 20:59:39 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,17 @@ int	main(void)
 
 	i = 0;
 	fd = open("test.txt", O_RDONLY);
-	line = get_next_line(fd);
-	while (line)
+	if (fd < 0)
+		return (1);
+	line = get_next_line(0);
+	if (line)
 	{
 		printf("Linea %d: %s", i + 1, line);
 		free(line);
 		i++;
-		line = get_next_line(fd);
 	}
+	else
+		printf("LINE: (null)\n");
+	close(fd);
 	return (0);
 }
