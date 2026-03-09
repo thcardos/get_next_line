@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:39:37 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/03 20:50:33 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/09 18:23:43 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,29 +82,30 @@ char	*ft_strdup(const char *s)
 	dup[i] = '\0';
 	return (dup);
 }
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *A, char const *B)
 {
-	char	*s3;
+	char	*C;
 	size_t	both_len;
 	size_t	i;
 
-	if (!s1 || !s2)
+	if (!A || !B)
 		return (NULL);
-	both_len = (ft_strlen(s1) + ft_strlen(s2));
-	s3 = malloc(both_len + 1);
-	if (!s3)
+	both_len = (ft_strlen(A) + ft_strlen(B));
+	C = malloc(both_len + 1);
+	if (!C)
 		return (NULL);
 	i = 0;
-	while (i < ft_strlen(s1))
+	while (i < ft_strlen(A))
 	{
-		s3[i] = s1[0 + i];
+		C[i] = A[0 + i];
 		i++;
 	}
-	while ((i - ft_strlen(s1)) < ft_strlen(s2))
+	while ((i - ft_strlen(A)) < ft_strlen(B))
 	{
-		s3[i] = s2[i - ft_strlen(s1)];
+		C[i] = B[i - ft_strlen(A)];
 		i++;
 	}
-	s3[ft_strlen(s1) + ft_strlen(s2)] = '\0';
-	return (s3);
+	C[ft_strlen(A) + ft_strlen(B)] = '\0';
+	free(A);
+	return (C);
 }
