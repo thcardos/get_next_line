@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:39:37 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/09 18:23:43 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/10 15:25:03 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /*char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 }*/
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
 	size_t	i;
 
@@ -26,7 +26,7 @@ size_t	ft_strlen(const char *s)
 		i++;
 	return (i);
 }
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char *s, int c)
 {
 	size_t	i;
 
@@ -43,7 +43,7 @@ char	*ft_strchr(const char *s, int c)
 		return ((char *)&s[i]);
 	return (NULL);
 }
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+void	*ft_memcpy(void *dest, void *src, size_t n)
 {
 	unsigned char	*a;
 	unsigned char	*b;
@@ -63,7 +63,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	}
 	return (dest);
 }
-char	*ft_strdup(const char *s)
+char	*ft_strdup(char *s)
 {
 	size_t	len;
 	int		i;
@@ -82,7 +82,7 @@ char	*ft_strdup(const char *s)
 	dup[i] = '\0';
 	return (dup);
 }
-char	*ft_strjoin(char const *A, char const *B)
+char	*ft_strjoin(char *A, char *B)
 {
 	char	*C;
 	size_t	both_len;
@@ -106,6 +106,5 @@ char	*ft_strjoin(char const *A, char const *B)
 		i++;
 	}
 	C[ft_strlen(A) + ft_strlen(B)] = '\0';
-	free(A);
 	return (C);
 }
