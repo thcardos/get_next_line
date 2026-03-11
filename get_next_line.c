@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:38:45 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/11 21:36:38 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/11 22:18:38 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,19 +93,27 @@ char	*find_new_line(char *A, char *buffer, int fd)
 char	*get_next_line(int fd)
 {
 	static char	*stash;
-	char		buffer[BUFFER_SIZE + 1];
+	char		*buffer;
 	char		*line;
 	char		*newline_pos;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+		
+	buffer = malloc(BUFFER_SIZE + 1);  // ← Allocar en heap
+	if (!buffer)
+		return (NULL);
 	if (stash != NULL)
 	{
 		newline_pos = ft_strchr(stash, '\n');
 		if (newline_pos != NULL)
+		{
+			free(buffer);
 			return (split_string(stash, &stash));
+		}
 	}
 	stash = find_new_line(stash, buffer, fd);
+	free(buffer);
 	if (!stash)
 		return (NULL);
 	line = split_string(stash, &stash);
