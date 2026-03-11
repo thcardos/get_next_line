@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:38:45 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/11 22:18:38 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/11 22:27:56 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,7 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-		
-	buffer = malloc(BUFFER_SIZE + 1);  // ← Allocar en heap
+	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
 	if (stash != NULL)
