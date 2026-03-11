@@ -6,70 +6,108 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:38:45 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/10 15:53:51 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/11 21:36:38 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-char *read_to_B(char *B, char *buffer, int fd)
+static char	*read_to_b(char *buffer, int fd)
 {
-	int			bytes_read;
+	int		bytes_read;
+	char	*new_buf;
+
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
 	if (bytes_read <= 0)
-	{
 		return (NULL);
-	}
-	B = malloc((bytes_read + 1) * sizeof(char));
-	if (!B)
-	{
-		free (B);
+	new_buf = malloc(bytes_read + 1);
+	if (!new_buf)
 		return (NULL);
-	}
-	B = ft_memcpy(B, buffer, bytes_read);
-	return (B);
+	ft_memcpy(new_buf, buffer, bytes_read);
+	new_buf[bytes_read] = '\0';
+	return (new_buf);
 }
-char *find_new_line(char *A, char *buffer, int fd)
+
+char	*handle_newline_case(char *A, char **stash, char *newline_pos)
 {
-	char	*B = NULL;
-	
-	if (!A)
-		return (NULL);
+	size_t	line_len;
+	size_t	rest_len;
+	char	*line;
+
+	line_len = (newline_pos - A) + 1;
+	line = malloc(line_len + 1);
+	if (!line)
+		return (free(A), *stash = NULL, NULL);
+	ft_memcpy(line, A, line_len);
+	line[line_len] = '\0';
+	rest_len = ft_strlen(newline_pos + 1);
+	if (rest_len > 0)
+	{
+		*stash = malloc(rest_len + 1);
+		if (!*stash)
+			return (free(A), free(line), NULL);
+		ft_memcpy(*stash, newline_pos + 1, rest_len);
+		(*stash)[rest_len] = '\0';
+	}
+	else
+		*stash = NULL;
+	return (free(A), line);
+}
+
+char	*split_string(char *A, char **stash)
+{
+	char	*newline_pos;
+	char	*line;
+
+	newline_pos = ft_strchr(A, '\n');
+	if (!newline_pos)
+	{
+		line = malloc(ft_strlen(A) + 1);
+		if (!line)
+			return (free(A), *stash = NULL, NULL);
+		ft_memcpy(line, A, ft_strlen(A) + 1);
+		free(A);
+		*stash = NULL;
+		return (line);
+	}
+	return (handle_newline_case(A, stash, newline_pos));
+}
+
+char	*find_new_line(char *A, char *buffer, int fd)
+{
+	char	*b;
+
 	while (!ft_strchr(A, '\n'))
 	{
-		B = read_to_B (B, buffer, fd);
-		A = ft_strjoin(A, B);//haciendo un join (dentro liberamos A)
-		//join retorna lo concatenado y lo mete en A
-		free(B);
+		b = read_to_b(buffer, fd);
+		if (!b)
+			break ;
+		A = ft_strjoin(A, b);
+		if (!A)
+			return (NULL);
 	}
-	if (ft_strchr(A, '\n'))
-	{
-		
-	}
-	return(A);
+	return (A);
 }
+
 char	*get_next_line(int fd)
 {
-	static char		*A;
-	char		buffer[BUFFER_SIZE];
-	int			bytes_read;
+	static char	*stash;
+	char		buffer[BUFFER_SIZE + 1];
+	char		*line;
+	char		*newline_pos;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-	{
 		return (NULL);
-	}
-	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	if (bytes_read <= 0)
+	if (stash != NULL)
 	{
-		return (NULL);
+		newline_pos = ft_strchr(stash, '\n');
+		if (newline_pos != NULL)
+			return (split_string(stash, &stash));
 	}
-	A = malloc((bytes_read + 1) * sizeof(char));
-	if (!A)
-	{
-		free (A);
+	stash = find_new_line(stash, buffer, fd);
+	if (!stash)
 		return (NULL);
-	}
-	A = ft_memcpy(A, buffer, bytes_read);
-	A = find_new_line(A, buffer, fd);
-	return (A);
+	line = split_string(stash, &stash);
+	return (line);
 }

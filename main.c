@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 12:50:03 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/10 14:30:27 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/11 21:17:59 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,21 @@ int	main(void)
 	if (fd < 0)
 		return (1);
 	line = get_next_line(fd);
-	if (line)
+
+	while (line)
 	{
-		printf("Linea %d: %s", i + 1, line);
-		free(line);
-		i++;
+		if(line)
+		{
+			printf("Linea %d: %s\n", i + 1, line);
+			free(line);
+			i++;
+		}
+		else
+			printf("LINE: (null)\n");
+		line = get_next_line(fd);
 	}
-	else
-		printf("LINE: (null)\n");
 	close(fd);
 	return (0);
 }
+/*cc -g -Wall -Wextra -Werror -fsanitize=address -D BUFFER_SIZE=10 get_next_line.c get_next_line_utils.c main.c && ./a.out
+*/
