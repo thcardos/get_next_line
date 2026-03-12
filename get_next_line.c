@@ -6,12 +6,11 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:38:45 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/11 22:27:56 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:40:44 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 static char	*read_to_b(char *buffer, int fd)
 {
@@ -82,7 +81,14 @@ char	*find_new_line(char *A, char *buffer, int fd)
 	{
 		b = read_to_b(buffer, fd);
 		if (!b)
+		{
+			if (A && ft_strlen(A) == 0)
+			{
+				free(A);
+				return (NULL);
+			}
 			break ;
+		}
 		A = ft_strjoin(A, b);
 		if (!A)
 			return (NULL);

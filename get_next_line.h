@@ -6,7 +6,7 @@
 /*   By: thcardos <thcardos@student.42malaga.co>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:39:16 by thcardos          #+#    #+#             */
-/*   Updated: 2026/03/11 22:15:48 by thcardos         ###   ########.fr       */
+/*   Updated: 2026/03/12 13:39:49 by thcardos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1000000000000
+#  define BUFFER_SIZE 42
 # endif
 
 # include <stdlib.h>
