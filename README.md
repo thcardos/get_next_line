@@ -16,7 +16,7 @@
 
 | Function Prototype | Description | Parameters | Return Value |
 |---------|-------------|-------------|-------------|
-| char *get_next_line(int fd)|Returns a line read from a file descriptor|fd: The file descriptor to read from |Read line: correct behavior NULL: there is nothing else to read, or an error occurred|
+| char *get_next_line(int fd) | Returns a line read from a file descriptor | fd: The file descriptor to read from |  Read line or NULL (if there is nothing else to read, or an error occurred) |
 
 </sub>
 
