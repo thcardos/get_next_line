@@ -14,17 +14,6 @@
 
 <sub>
 
-| Specifiers | Description |
-|---------|-------------|
-| `%c` | Prints a character |
-| `%s` | Prints a text string |
-| `%d / %i` | Prints a signed integer |
-| `%u` | Prints an unsigned integer |
-| `%x` | Prints a number in hexadecimal (lowercase) |
-| `%X` | Prints a hexadecimal number (uppercase) |
-| `%p` | Prints a pointer (memory address) |
-| `%%` | Prints the per cent symbol |
-
 | Function Prototype | Description | Parameters | Return Value |
 |---------|-------------|-------------|-------------|
 | char *get_next_line(int fd)|Returns a line read from a file descriptor|fd: The file descriptor to read from |Read line: correct behavior NULL: there is nothing else to read, or an error occurred|
@@ -33,8 +22,6 @@
 
 <sub>**Below is a detailed description of each function and its logic:** 
 </sub>
-
-<sub>**Main Functions**</sub>
 
 <sub>**`get_next_line`** </sub>
 
@@ -48,7 +35,17 @@
 
 <sub>- Returns NULL on error or EOF</sub>
 
-<sub>**`get_line`** </sub>
+<sub>**`find_new_line`** </sub>
+
+<sub>- Reads from the file descriptor until a newline is found</sub>
+
+<sub>- Uses the defined BUFFER_SIZE for reading chunks</sub>
+
+<sub>- Appends read content to the static buffer</sub>
+
+<sub>- Handles end of file conditions</sub>
+
+<sub>**`split_string`** </sub>
 
 <sub>- Handles the extraction of the line from the static buffer</sub>
 
@@ -58,7 +55,33 @@
 
 <sub>- Returns the extracted line</sub>
 
-<sub>**`ft_strjoin`** </sub>
+<sub>**`handle_newline_case`**</sub>
+
+<sub>- Processes the case when a newline is found in the buffer</sub>
+
+<sub>- Allocates memory for the line to return</sub>
+
+<sub>- Updates the stash with the remaining content</sub>
+
+<sub>- Frees temporary buffers appropriately</sub>
+
+<sub>- Duplicates a string into a newly allocated memory space</sub>
+
+<sub>- Handles memory allocation safely</sub>
+
+<sub>- Returns the duplicated string</sub>
+
+<sub>**`read_to_b`**</sub>
+
+<sub>- Reads data from the file descriptor into a buffer</sub>
+
+<sub>- Returns the read content as a newly allocated string</sub>
+
+<sub>- Handles read errors and EOF conditions</sub>
+
+<sub>- Returns NULL when nothing more can be read</sub>
+
+<sub>**`ft_strjoin`**</sub>
 
 <sub>- Joins two strings into a newly allocated string</sub>
 
@@ -68,133 +91,87 @@
 
 <sub>- Returns the concatenated string</sub>
 
-<sub>**`ft_process_valid`**</sub>
+<sub>**`ft_strlen`**</sub>
 
-<sub>**Output Functions**</sub>
+<sub>- Calculates the length of a string</sub>
 
-<sub>**`ft_print_char`**</sub>
+<sub>- Handles NULL pointers safely</sub>
 
-<sub>- Prints a single character</sub>
+<sub>- Returns the number of characters before '\0'</sub>
 
-<sub>- Casts input to `unsigned char` to handle edge cases</sub>
+<sub>**`ft_strchr`**</sub>
 
-<sub>- Returns 1 (always prints exactly one character)</sub>
+<sub>- Searches for a character in a string</sub>
 
-<sub>**`ft_print_str`**</sub>
+<sub>- Returns pointer to first occurrence or NULL</sub>
 
-<sub>- Prints a string safely</sub>
+<sub>- Used to find newline characters</sub>
 
-<sub>- Handles NULL pointers by printing "(null)"</sub>
+<sub>**`ft_memcpy`**</sub>
 
-<sub>- Returns the length of the printed string</sub>
+<sub>- Copies memory from source to destination</sub>
 
-<sub>**`ft_print_int`**</sub>
+<sub>- Handles byte-by-byte copying</sub>
 
-<sub>- Converts signed integers to strings and prints them</sub>
-
-<sub>- Uses `ft_itoa()` from libft to handle the conversion</sub>
-
-<sub>- Manages memory deallocation after printing</sub>
-
-<sub>- Returns the number of digits printed</sub>
-
-<sub>**`ft_print_uint`**</sub>
-
-<sub>- Prints unsigned integers directly without conversion</sub>
-
-<sub>- Uses recursive digit extraction to avoid string allocation</sub>
-
-<sub>- Counts and prints each digit in sequence</sub>
-
-<sub>- Returns the number of digits printed</sub>
-
-<sub>**`ft_print_hex`**</sub>
-
-<sub>- Converts unsigned integers to hexadecimal format</sub>
-
-<sub>- Supports both lowercase (%x) and uppercase (%X) formats</sub>
-
-<sub>- Uses a lookup string ("0123456789abcdef" or "0123456789ABCDEF")</sub>
-
-<sub>- Recursively processes each hexadecimal digit</sub>
-
-<sub>- Returns the number of characters printed</sub>
-
-<sub>**`ft_print_ptr`**</sub>
-
-<sub>- Prints memory addresses (pointers) in hexadecimal format</sub>
-
-<sub>- Adds the "0x" prefix before the address</sub>
-
-<sub>- Handles NULL pointers appropriately</sub>
-
-<sub>- Uses `unsigned long` for pointer arithmetic</sub>
-
-<sub>- Returns the total characters printed (including "0x")</sub>
+<sub>- Returns the destination pointer</sub>
 
 <sub>**Algorithm and Data Structure**</sub>
 
-<sub>**`Character-by-character format analysis`**</sub>
+<sub>**`Static Variable for State Preservation`**</sub>
 
-<sub>I walk through the format string and react only when I encounter a `%`.</sub>
-
-<sub><sub>**Why:**</sub></sub>
-
-<sub>- It is simple and easy to follow.</sub>
-
-<sub>- It does not require complex structures.</sub>
-
-<sub>- It is efficient: it reads each character only once.</sub>
-
-<sub>- It is the same strategy used by the original `printf`.</sub>
-
-<sub>**`Converting numbers with recursivity`**</sub>
-
-<sub>To print `%u`, `%x`, and `%X`, I use recursive functions that divide the number by the base (10 or 16) and then print the digit.</sub>
+<sub>I use a static variable to store the remainder of the buffer between function calls.</sub>
 
 <sub><sub>**Why:**</sub></sub>
 
-<sub>- Recursion prints from left to right without storing digits in an array.</sub>
+<sub>- It allows the function to remember where it left off in the file.</sub>
 
-<sub>- It avoids using extra memory to construct a string.</sub>
+<sub>- It enables reading across multiple calls to get_next_line().</sub>
 
-<sub>- It is easy to read and check.</sub>
+<sub>- It is essential for handling lines larger than BUFFER_SIZE.</sub>
 
-<sub>- less memory and simpler code.</sub>
+<sub>- It is the core concept taught by this project.</sub>
 
-<sub>**`Symbol table for hexadecimal`**</sub>
+<sub>**`Buffer Management with BUFFER_SIZE`**</sub>
 
-<sub>I use a string such as ‘0123456789abcdef’ or ‘0123456789ABCDEF’.</sub>
-
-<sub><sub>**Why:**</sub></sub>
-
-<sub>- Avoids many `if/else` statements.  </sub>
-
-<sub>- It makes the code shorter and easier to read. </sub>
-
-<sub>- It is cleaner and faster.</sub>
-
-<sub>**`Separating printing and counting`**</sub>
-
-<sub>I use functions that print and others that count how many digits are printed (`ft_count_digits`).</sub>
+<sub>I read data in chunks defined by the BUFFER_SIZE macro.</sub>
 
 <sub><sub>**Why:**</sub></sub>
 
-<sub>- The `ft_printf` function must return the exact number of characters.  </sub>
+<sub>- It optimizes memory usage by not reading the whole file at once.</sub>
 
-<sub>- Separating responsibilities prevents errors improves clarity and facilitates testing. </sub>
+<sub>- It allows flexibility for different testing environments.</sub>
 
-<sub>- It is cleaner and faster.</sub>
+<sub>- It prevents excessive memory allocation.</sub>
 
-<sub>**`ft_itoa() for signed integers`**</sub>
+<sub>- It follows the project constraints.</sub>
 
-<sub>I reuse a previously tested function `ft_itoa()` from my `libft` to convert signed integers</sub>
+<sub>**`Dynamic Memory Allocation`**</sub>
+
+<sub>I use malloc to create strings for the lines returned.</sub>
 
 <sub><sub>**Why:**</sub></sub>
 
-<sub>- It handles negative signs correctly.</sub>
+<sub>- The size of the line is unknown beforehand.</sub>
 
-<sub>- It simplifies the logic in `ft_print_int()`.</sub>
+<sub>- It ensures the returned string persists after the function returns.</sub>
+
+<sub>- It requires careful freeing to avoid memory leaks.</sub>
+
+<sub>- It is standard practice for string manipulation in C.</sub>
+
+<sub>**`Separating Utilities and Logic`**</sub>
+
+<sub>I use helper functions in get_next_line_utils.c for string manipulation.</sub>
+
+<sub><sub>**Why:**</sub></sub>
+
+<sub>- It keeps get_next_line.c clean and focused on logic.</sub>
+
+<sub>- It facilitates testing and debugging.</sub>
+
+<sub>- It improves code readability and modularity.</sub>
+
+<sub>- It follows the Norm requirements.</sub>
 
 <sub>**`Chosen data types`**</sub>
 
@@ -202,22 +179,22 @@
 
 | Function | Type | Justification |
 |--------|------|---------------|
-| `ft_print_int()` | `int` | It is the standard type for `%d` and `%i` |
-| `ft_print_uint()` | `unsigned int` | Avoids problems with negative numbers |
-| `ft_print_hex()` | `unsigned int` | Unsigned base 16 |
-| `ft_print_ptr()` | `unsigned long` | Allows complete addresses to be represented |
+| `get_next_line()` | `char *` | Returns a dynamically allocated string |
+| `fd` | `int` | Standard file descriptor type |
+| `static buffer` | `char *` | Stores remainder between calls |
+| `BUFFER_SIZE` | `macro` | Defines read chunk size at compilation |
 
 </sub>
 
-<sub>**`Handling NULL`**</sub>
+<sub>**`Handling NULL and Errors`**</sub>
 
-<sub>- It revents memory access errors.</sub>
+<sub>- It prevents memory access errors.</sub>
 
-<sub>- It matches the actual behaviour of `printf`:</sub>
+<sub>- It matches the actual behaviour of the subject:</sub>
 
-<sub>- `‘(null)’` for null strings</sub>
+<sub>- Returns `NULL` on error or when nothing else is to be read.</sub>
 
-<sub>- `‘(nil)’` for null pointers</sub>
+<sub>- Frees memory appropriately before returning `NULL`.</sub>
 
 
 ## ![Instructions](https://img.shields.io/badge/Instructions-B19CD9?style=flat-square)
@@ -226,23 +203,13 @@
 
 **Compilation with the library**
 ```bash
-cc -Wall -Wextra -Werror main.c libftprintf.a -o test
+cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 main.c get_next_line.c get_next_line_utils.c -o test
 ```
-
-**Available commands**
-
-| Comand | Description |
-|---------|-------------|
-| `make` | Compiles the library |
-| `make clean` | Deletes all the object files (.o) |
-| `make fclean` | Deletes the object files and the library |
-| `make re` | Compiles everything again |
-
 </sub>
 
 <sub>**Testing the functions:**</sub>
 
-<sub>Here you have the [Main File](https://github.com/thcardos/ft_printf/blob/main/main.c) I have created to test my functions.
+<sub>Here you have the [Main File](https://github.com/thcardos/get_next_line/blob/main/main.c) and the [.txt File](https://github.com/thcardos/get_next_line/blob/main/test.txt)I have created to test my functions.
 </sub>
 
 
@@ -250,11 +217,11 @@ cc -Wall -Wextra -Werror main.c libftprintf.a -o test
 
 **Memory verification with Valgrind:**
 ```bash
-# Compile your program with the library (-L search for libraries in the current directory (.) and -lftprintf links with the libary libftprintf.a)
-cc -g -Wall -Wextra -Werror main.c -L. -lftprintf -o test
+# Compile your program with the buffer size flag
+cc -g -Wall -Wextra -Werror -D BUFFER_SIZE=42 main.c get_next_line.c get_next_line_utils.c -o test
 
 # Run with Valgrind
-valgrind --leak-check=full ./program
+valgrind --leak-check=full ./test
 
 # Show all possible Leaks
 valgrind --leak-check=full --show-leak-kinds=all ./test
@@ -282,39 +249,38 @@ LEAK SUMMARY:
 ```
 This indicates that there is memory that was allocated with malloc but never freed with free.
 
+**Using LLDB**
 
-**Using GDB (GNU Debugger)**
+LLDB is the default debugger for macOS and LLVM-based systems. It provides similar functionality to GDB with a modern interface.
 
-GDB is an interactive debugger that allows you to inspect your program while it runs.
-
-**Basic usage:**
 ```bash
 # Compile with debugging symbols
-gcc -g -Wall -Wextra -Werror main.c -L. -lftprintf -o test
+clang -g -Wall -Wextra -Werror -D BUFFER_SIZE=42 main.c get_next_line.c get_next_line_utils.c -o test
 
-# Start GDB
-gdb ./test
+# Start LLDB
+lldb ./test
 ```
 
-**GDB commands**
+LLDB commands |Description
+|---|---|
+| b main|Set a breakpoint at main function|
+| r|Execute the program|
+| gui|Opens the interface|
+| `n`|Execute next line (step over)|
+| `s`| Execute next line (step in) |
+|`c`|Continue execution|
+|`h`|Shows help dialog|
+|`esc`|Exit interface|
+| exit|Exit LLDB|
 
-| Comand | Description |
-|---------|-------------|
-| `run` | Execute the program |
-| `break main` | Set a breakpoint at main function |
-| `break your_program` | Set a breakpoint at your_program |
-| `next` | Execute next line (step over) |
-| `step` | Execute next line (step into) |
-| `print variable` | Print variable value |
-| `continue` | Continue execution |
-| `quit` | Exit GDB |
+
 
 **Using AddressSanitizer**
 
 AddressSanitizer detects memory errors at runtime.
 
 ```bash
-gcc -g -fsanitize=address -Wall -Wextra -Werror main.c -L. -lftprintf -o test
+gcc -g -fsanitize=address -Wall -Wextra -Werror -D BUFFER_SIZE=42 main.c get_next_line.c get_next_line_utils.c -o test
 ./test
 ```
 This will automatically detect:
@@ -332,17 +298,15 @@ This will automatically detect:
 
 **References used:**
 
-- [ft_printf Subject (v12.0)]() - Official project subject
+- [get_next_line Subject (v14.0)]() - Official project subject
 
 - [Learn-C.org](https://www.learn-c.org/) - Interactive C tutorial.
 
-- [Make Tutorial](https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/) - Makefiles tutorial.
-
 - [C Reference Manual](https://en.cppreference.com/w/c) - Complete C reference documentation.
-  
-- [Hardfloat](https://hardfloat.es/blog/2021/11/05/funciones-variadicas.html) - Blog with useful explanations about variadic functions in spanish.
 
-- [GeeksforGeeks - C Programming](https://www.geeksforgeeks.org/c-programming-language/) - C tutorials and examples. Specifically [variadic functions](https://www.geeksforgeeks.org/c/variadic-functions-in-c/).
+- [Static Variables in C](https://www.geeksforgeeks.org/c/static-variables-in-c/) - Explanation of static variables.
+
+- [GeeksforGeeks - C Programming](https://www.geeksforgeeks.org/c-programming-language/) - C tutorials and examples. Specifically [file handling](https://www.geeksforgeeks.org/c/basics-file-handling-c/).
 
 - [Stack Overflow](https://stackoverflow.com/questions) - Community for resolving specific queries.
 
